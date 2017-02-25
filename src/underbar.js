@@ -118,6 +118,11 @@
 
   // Return the results of applying an iterator to each element.
   _.map = function(collection, iterator) {
+    var finalArray =[];
+    _.each(collection, function(item){
+      finalArray.push(iterator(item));
+    });
+      return finalArray; 
     // map() is a useful primitive iteration function that works a lot
     // like each(), but in addition to running the operation on all
     // the members, it also maintains an array of results.
@@ -162,8 +167,29 @@
   //   }); // should be 5, regardless of the iterator function passed in
   //          No accumulator is given so the first element is used.
   _.reduce = function(collection, iterator, accumulator) {
+    // if (accumulator===undefined){
+    //    accumulator =collection[0];
+    // } else {
+    //    accumulator = accumulator;
+    // }
+    //   var finalArray = _.map(collection, function(item){
+    //     return accumulator=iterator(accumulator, item); //why is accumulator passed in before item?
+    //   });
+    // return _.last(finalArray);
+    // };
+    _.each(collection, function(item, index){
+    if(accumulator===undefined && index===0){
+        accumulator=item;
+    } else {
+        if(iterator(accumulator,item)!==undefined){
+          accumulator=iterator(accumulator,item);
+        } 
+      }
+     });
+      return accumulator;
   };
 
+  
   // Determine if the array or object contains a given value (using `===`).
   _.contains = function(collection, target) {
     // TIP: Many iteration problems can be most easily expressed in
@@ -179,12 +205,43 @@
 
   // Determine whether all of the elements match a truth test.
   _.every = function(collection, iterator) {
-    // TIP: Try re-using reduce() here.
+     if (arguments.length===2){
+       return _.reduce(collection, function(accumulator, item){
+          if(accumulator===false){
+              return false; 
+          }
+            return Boolean(iterator(item));
+       }, true);
+     } else {
+       return _.reduce(collection, function (accumulator, item){
+          if (accumulator===false){
+            return false;
+          }
+          return Boolean(item);
+       }, true);
+   }; 
   };
+ 
+
+  
+  
+  
+    // TIP: Try re-using reduce() here.
+
 
   // Determine whether any of the elements pass a truth test. If no iterator is
   // provided, provide a default one
   _.some = function(collection, iterator) {
+    if(arguments.length===2){
+      return !(_.every(collection, function(v){
+        return !iterator(v);
+        //check for every element to not pass the truth test. if some of them don't pass, 'every' would result to be false, but because some don't pass imply some did, which is what we want, we want 'every' to return true. 
+      }));
+    } else {
+      return !(_.every(collection, function(v){
+        return !Boolean(v);
+      }));
+    }
     // TIP: There's a very clever way to re-use every() here.
   };
 
@@ -208,6 +265,7 @@
   //     bla: "even more stuff"
   //   }); // obj1 now contains key1, key2, key3 and bla
   _.extend = function(obj) {
+    
   };
 
   // Like extend, but doesn't ever overwrite a key that already
