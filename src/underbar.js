@@ -281,6 +281,19 @@
   // Like extend, but doesn't ever overwrite a key that already
   // exists in obj
   _.defaults = function(obj) {
+    if(arguments.length>1){
+      for(var i=1; i<arguments.length; i++){
+        var keysArray=Object.keys(arguments[i]);
+        for (var j=0; j<keysArray.length; j++){
+          if (obj[keysArray[j]]===undefined){
+            obj[keysArray[j]]=arguments[i][keysArray[j]];
+          }
+        }
+      }
+      return obj;
+    } else {
+      return obj;
+    }
   };
 
 
@@ -324,7 +337,29 @@
   // already computed the result for the given argument and return that value
   // instead if possible.
   _.memoize = function(func) {
-  };
+    var result;
+    var obj ={};
+    return function (){ 
+        var arrayOfKeys = Object.keys(arguments);
+        var stringOfKeys = arrayOfKeys.join(",");
+        if(obj[stringOfKeys]===undefined){
+            result = func.apply(this, arguments);
+            obj[arrayOfKeys[stringOfKeys]]=result;
+            return result;
+          } else {
+            return obj[stringOfKeys];
+          }
+        }
+    //     if(obj[arguments]===undefined){
+    //       result = func.apply(this, arguments);
+    //       obj[arguments]=result;
+    //       return result;
+    //     } else {
+    //       obj[arguments]=func(arguments);
+    //       return obj[arguments];
+    //     }
+    };
+  
 
   // Delays a function for the given number of milliseconds, and then calls
   // it with the arguments supplied.
