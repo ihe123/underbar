@@ -181,9 +181,7 @@
     if(accumulator===undefined && index===0){
         accumulator=item;
     } else {
-        if(iterator(accumulator,item)!==undefined){
           accumulator=iterator(accumulator,item);
-        } 
       }
      });
       return accumulator;
